@@ -12,6 +12,7 @@ Todo:
 
 """
 import logging
+import re
 
 import word_neo4j.send_notification  # pylint: disable=import-error
 import word_neo4j.settings_accessor  # pylint: disable=import-error
@@ -24,91 +25,74 @@ _LOGGER.addHandler(_HANDLER)
 _LOGGER.setLevel(logging.WARNING)
 
 
-class Identifier:
-    """Identifier is for making Neo4j identifiers.
+def to_lower_snake_case(name):
+    """To lower snake case.
 
-    An identifier is a reserved word in Neo4j Cypher
-    (MATCH, WHERE, WITH, etc.).
+    Converts a string from CamelCase to snake_case.
 
-    Attributes:
-        word (str): String to be used in Cypher
+    Args:
+        name (str): String to convert.
+
+    Returns:
+        str: Converted string.
+
+    .. _PEP 484:
+        https://www.python.org/dev/peps/pep-0484/
 
     """
-    def __init__(self, value):
-        """Initialize Identifier object.
-
-        That's it.
-
-        Args:
-            value (str): Input string.
-
-        """
-        self._word = value
-
-    @property
-    def word(self):
-        """str: Capitalizes."""
-        return self._word.upper()
+    s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
+    return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
 
 
-class Alias:
-    """Alias is for making Neo4j aliases.
+class Node:
+    """Node is for making Neo4j nodes.
 
-    An alias is a temporary name given to a results set of nodes.
+    A node is
+    Case sensitive.
 
     Attributes:
         word (str): String to be used in Cypher.
 
     """
 
-    def __init__(self, value):
-        """Initialize Identifier object.
+    def __init__(self, value, variable=True, variable_name=None):
+        """Initialize Node object.
 
-        That's it.
+        Variable indicates if should provide node with a variable name.
+        Variable name is the name of variable to provide.
 
-        Args:
-            value (str): Input string.
-
-        """
-        self._word = value
-
-    @property
-    def word(self):
-        """str: Prepends an '_'."""
-        return '_' + self._word
-
-
-class Label:
-    """Label is for making Neo4j aliases.
-
-    A label is a way of categorizing nodes.
-
-    Attributes:
-        word (str): String to be used in Cypher.
-
-    """
-
-    def __init__(self, value):
-        """Initialize Label object.
-
-        That's it.
+        If a variable name is provided, a variable will be created unless
+        variable is explicitly set to False.
 
         Args:
             value (str): Input string.
+            variable (bool): Variable name to give node.
+            variable_name (str):
 
         """
         self._word = value
+        self._variable = variable
+        self._variable_name = variable_name
 
     @property
     def word(self):
-        """str: Turns to upper camel case."""
-        return ''.join(x for x in self._word.title() if not x == '_')
+        """str: Creates node."""
+        if self._variable:
+            if self._variable_name:
+                variable_name = self._variable_name
+            else:
+                variable_name = '_' + to_lower_snake_case(self._word)
+            out = '({}:{})'.format(variable_name, self._word)
+        else:
+            out = '(:{})'.format(self._word)
+        return out
 
 
 class Relationship:
     """Relationship is for making Neo4j relationships.
 
     A relationship is a way of connecting nodes.
+    Case sensitive.
 
     Attributes:
         word (str): String to be used in Cypher.
@@ -130,7 +114,7 @@ class Relationship:
 
     @property
     def word(self):
-        """str: Turns to upper camel case."""
+        """str: Creates relationship word."""
         if self._value:
             if self._direction == 'right':
                 out = '-[:{}]->'.format(self._value.upper())
@@ -148,6 +132,7 @@ class DynamicRelationship(Relationship):
     """Relationship is for making Neo4j relationships.
 
     A relationship is a way of connecting nodes.
+    Case sensitive.
 
     Attributes:
         word (str): String to be used in Cypher.
