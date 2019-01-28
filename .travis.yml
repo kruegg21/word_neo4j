@@ -3,6 +3,7 @@ python:
 - 3.6
 - 3.5
 - 3.4
+- 2.7
 install: pip install -U tox-travis
 script: tox
 deploy:
@@ -10,7 +11,7 @@ deploy:
   distributions: sdist bdist_wheel
   user: kruegg21
   password:
-    secure: YUbh/vJNQalChVbWBh2TCsA63Agj8u14CVFlayjuU2Y71SyMYrdOYpSJM5KuKBjvJ/7KIg3l8zEmRWsi/xjDf2UdJNdNFfedXmh/qeT3yQqgvT7R624+K332GM/3tnC+ZWlvDDhKEfoPLJ///MdXqytd5jc31ySFsU2rcmsClQjTA2wZEhBR3ofqHEbx/j1dPC3INC1V/ZzIwLEVTeNq6wZXuEnfMUhOwfYwLXEBVVQz7r/LFjep9jY+4ZY0i1w0prK7A8dNprM1YaX+Bs8eB5akk9SA6J8WCZ4ZX5CZWFBXw6SHVGPLmkb+V2oCwYvInQPH0kGteZ3qAPEpCK8gNutW4GpI8jh+kc1cCIHUWiEhsTVGIDgqLrRJRey0c/Sr+Jd0nsXyeSQxk7fB0eKR5sRICRXg2VmJ/Fy+RZ66N/bDI+exla2NRg1CGZBwrobg/fHkcWhXMnYinHHsqrW81Epb+Eluel3pffcXqFKuK9HIbCkGhlBZh+LguVIDc82BSA7tJyxX7CIB0iRlOt+hy745cEZn1BdebayG6V4+Auvq6kznHRXqgYUu/hnMOMylWPkrJ0rV54CZ9eH0np9F2BJ9Pl+MdgD8iOFztiwVZJMKAlFDwX69NIh0eZ8MTC7MZ5hFGhD1uE4INajRxP7M8Fs4AtazNfqbfRgUHRwJLeg=
+    secure: h6gGFyl1Ps48qD0vSGNorwARbj1VjtNexYpAx/ya+vzdKf2eIxmgRq85OIBi5S9vBJyucSjPkdJtBV8HRkpGXC9E4C9Ty6Aff5DjHuyNOsF/BXPQVoffeDkkaX8R5VDZ5j0vvvbnKJyJQt8QEnawTOjuZHPJ69cVXeiCX9xKuh2aCTbZ6jhTdKBz1MYYu5a0UHxdPsC6INyxG+bvkdweTexEgJeU3/4nXIV18zZMZcIDq3f7FdYd5i3lGzwxcALCs+CyVuXf9Lj+gcdfeIDa6L7AeHMfrb5t7zxAgk548RY/lVSDgB4XYhOVlH7V0gDEYHxpYBj8OdFuJ2qx9EwgQksHo+6/7xV/BbDo52YQwxBFFfCg9NGWbR2qEjeGEKVIMan6fMvf+Y9OBgkzgussnRU+Jio+U/Es1zFt+JiKfH66qa5R7icWkbcCxMIPtdyd4vZQ8TD2Sln2ZCf0Ru+AgQZzHFnkoLOeTRbwl6k9XafU8JO4Yq0fx0IepPb1s3574iDIXd3V0ADlw7jZQjrh5ti/o5Fs7LHncUiyYWgfT++AN1ZenkTBsDs01hKNUFBwAHypOjUnsfypITUZR4wCE5NKT7LEcB0kVuYUxkxCYZz1CKnHZxhdX5Jn1isNLi9605m4DXVofJ7xdhNBfgDmpXOEc59m22hRdzc54VrNKcc=
   on:
     tags: true
     repo: kruegg21/word_neo4j
