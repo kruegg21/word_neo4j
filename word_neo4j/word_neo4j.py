@@ -5,24 +5,25 @@ This module contains classes for creating the word components of Neo4j Cypher
 queries.
 
 Todo:
-    * Operation and Property classes
+    * Build pattern module that uses these words to build more advanced
+    functionality.
+    * Decide if we want to enforce convention (currently forcing keywords to
+    be all caps and variable names to lower snake with leading underscore)
 
 .. _Google Python Style Guide:
    http://google.github.io/styleguide/pyguide.html
 
 """
-import logging
+import logging.config
 import re
 
-import word_neo4j.send_notification  # pylint: disable=import-error
 import word_neo4j.settings_accessor  # pylint: disable=import-error
 
 
 _SETTINGS = word_neo4j.settings_accessor.SettingsAccessor()
+logging.config.dictConfig(_SETTINGS.logging_config)
 _LOGGER = logging.getLogger(__name__)
-_HANDLER = word_neo4j.send_notification.EmailHandler()
-_LOGGER.addHandler(_HANDLER)
-_LOGGER.setLevel(logging.WARNING)
+_LOGGER.setLevel(logging.INFO)
 
 
 def to_lower_snake_case(name):
@@ -42,6 +43,34 @@ def to_lower_snake_case(name):
     """
     s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
     return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
+
+
+class Keyword:
+    """Keywords makes Neo4j Cypher keyword strings.
+
+    A keyword is a reserved word for specific actions in a query (MATCH,
+    WHERE, WITH etc.).
+
+    Attributes:
+        word (str): Keyword string.
+
+    """
+
+    def __init__(self, value):
+        """Initialize Keyword object.
+
+        That's it.
+
+        Args:
+            value (str): Input string.
+
+        """
+        self._word = value
+
+    @property
+    def word(self):
+        """str: Capitalizes."""
+        return self._word.upper()
 
 
 class Node:
@@ -65,26 +94,36 @@ class Node:
         variable is explicitly set to False.
 
         Args:
-            value (str): Input string.
+            value (str|None): Input string.
             variable (bool): Variable name to give node.
             variable_name (str):
 
         """
-        self._word = value
+        self._value = value
         self._variable = variable
         self._variable_name = variable_name
+        _LOGGER.debug(str(self))
+
+    def __str__(self):
+        return """{}('{}')""".format(
+            self.__class__.__name__,
+            self._value
+        )
 
     @property
     def word(self):
         """str: Creates node."""
-        if self._variable:
-            if self._variable_name:
-                variable_name = self._variable_name
+        if self._value:
+            if self._variable:
+                if self._variable_name:
+                    variable_name = self._variable_name
+                else:
+                    variable_name = '_' + to_lower_snake_case(self._value)
+                out = '({}:{})'.format(variable_name, self._value)
             else:
-                variable_name = '_' + to_lower_snake_case(self._word)
-            out = '({}:{})'.format(variable_name, self._word)
+                out = '(:{})'.format(self._value)
         else:
-            out = '(:{})'.format(self._word)
+            out = '()'
         return out
 
 
@@ -112,9 +151,17 @@ class Relationship:
         self._value = value
         self._direction = direction
 
+    def __str__(self):
+        return """{}({}, direction='{}')""".format(
+            self.__class__.__name__,
+            self._value,
+            self._direction,
+        )
+
     @property
     def word(self):
         """str: Creates relationship word."""
+        _LOGGER.debug(str(self))
         if self._value:
             if self._direction == 'right':
                 out = '-[:{}]->'.format(self._value.upper())

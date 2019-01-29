@@ -7,12 +7,25 @@ import unittest.mock
 from word_neo4j import word_neo4j
 
 
+class TestKeyword(unittest.TestCase):
+    """Testing Keyword class."""
+    def test_default(self):
+        """Testing Keyword object creation."""
+        keyword = word_neo4j.Keyword('match')
+        assert keyword.word == 'MATCH'
+
+
 class TestNode(unittest.TestCase):
     """Testing Node class."""
     def test_default(self):
         """Testing Node object creation with no kwargs."""
         node = word_neo4j.Node('FooBar')
         assert node.word == '(_foo_bar:FooBar)'
+
+    def test_empty(self):
+        """Testing Node object with None for value."""
+        node = word_neo4j.Node(None)
+        assert node.word == '()'
 
     def test_explicitly_no_variable(self):
         """Testing Node object creation with explicit variable=False."""
