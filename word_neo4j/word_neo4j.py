@@ -8,23 +8,24 @@ Todo:
     * Build pattern module that uses these words to build more advanced
     functionality.
     * Decide if we want to enforce convention (currently forcing keywords to
-    be all caps and variable names to lower snake with leading underscore)
+    be all caps and variable names to lower snake with leading underscore).
+    * Remove logging.
 
 .. _Google Python Style Guide:
    http://google.github.io/styleguide/pyguide.html
 
 """
-import logging.config
+# import logging.config
 import re
 
 import word_neo4j.settings_accessor  # pylint: disable=import-error
 
 
 _SETTINGS = word_neo4j.settings_accessor.SettingsAccessor()
-if _SETTINGS.logging_config:
-    logging.config.dictConfig(_SETTINGS.logging_config)
-_LOGGER = logging.getLogger(__name__)
-_LOGGER.setLevel(logging.INFO)
+# if _SETTINGS.logging_config:
+#     logging.config.dictConfig(_SETTINGS.logging_config)
+# _LOGGER = logging.getLogger(__name__)
+# _LOGGER.setLevel(logging.INFO)
 
 
 def to_lower_snake_case(name):
@@ -103,7 +104,7 @@ class Node:
         self._value = value
         self._variable = variable
         self._variable_name = variable_name
-        _LOGGER.debug(str(self))
+        # _LOGGER.debug(str(self))
 
     def __str__(self):
         return """{}('{}')""".format(
@@ -162,7 +163,7 @@ class Relationship:
     @property
     def word(self):
         """str: Creates relationship word."""
-        _LOGGER.debug(str(self))
+        # _LOGGER.debug(str(self))
         if self._value:
             if self._direction == 'right':
                 out = '-[:{}]->'.format(self._value.upper())
