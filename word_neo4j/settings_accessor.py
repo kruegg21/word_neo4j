@@ -67,7 +67,9 @@ def _attempt_read_json_file(file_place, file_not_found_message):
         with open(file_place) as file:
             return json.load(file)
     except FileNotFoundError:
-        pass
+        should_print = False
+        if should_print:
+            _LOGGER.info(file_not_found_message)
 
 
 _EMAIL_CONFIG = _attempt_read_json_file(_EMAIL_CONFIG_PLACE,

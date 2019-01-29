@@ -21,7 +21,8 @@ import word_neo4j.settings_accessor  # pylint: disable=import-error
 
 
 _SETTINGS = word_neo4j.settings_accessor.SettingsAccessor()
-logging.config.dictConfig(_SETTINGS.logging_config)
+if _SETTINGS.logging_config:
+    logging.config.dictConfig(_SETTINGS.logging_config)
 _LOGGER = logging.getLogger(__name__)
 _LOGGER.setLevel(logging.INFO)
 
